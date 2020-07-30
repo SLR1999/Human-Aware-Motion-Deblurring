@@ -1,5 +1,6 @@
 import torch
 from torch.nn import Linear, ReLU, Sequential, Conv2d, MaxPool2d, Module, ConvTranspose2d, Sigmoid
+from resnet_unit import ResidualBlock
 
 class BGDecoder(Module):   
     def __init__(self):

@@ -20,13 +20,13 @@ class Net(Module):
         )
 
         self.decoder_layers = Sequential(
-            ConvTranspose2d(64,32,kernel_size = 3,stride = 2,padding = 3,output_padding = 1,dilation=2),
+            ConvTranspose2d(64,32,kernel_size = 2,stride = 1,padding = 1,output_padding = 0,dilation=2),
             ReLU(inplace=True),
 
-            ConvTranspose2d(32,16,kernel_size = 3,stride = 2,padding = 3,output_padding = 1,dilation=2),
+            ConvTranspose2d(32,16,kernel_size = 3,stride = 2,padding = 2,output_padding = 1,dilation=2),
             ReLU(inplace=True),
 
-            ConvTranspose2d(16,3,kernel_size = 3,stride = 2,padding = 3,output_padding = 1,dilation=2),
+            ConvTranspose2d(16,3,kernel_size = 3,stride = 2,padding = 2,output_padding = 1,dilation=2),
             ReLU(inplace=True),
         )
 
