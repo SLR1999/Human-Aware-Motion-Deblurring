@@ -1,9 +1,9 @@
 import torch
 from torch.nn import Linear, ReLU, Sequential, Conv2d, MaxPool2d, Module, ConvTranspose2d, Sigmoid
 
-class Net(Module):   
+class Attention(Module):   
     def __init__(self):
-        super(Net, self).__init__()
+        super(Attention, self).__init__()
 
         self.encoder_layers = Sequential(
             Conv2d(3, 16, kernel_size=5, stride=1, padding=2),
