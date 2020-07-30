@@ -18,7 +18,7 @@ class BGDecoder(Module):
             ResidualBlock(32, 32, apply_activation=True),
             ResidualBlock(32, 32, apply_activation=True),
             ResidualBlock(32, 32, apply_activation=True),
-            ConvTranspose2d(32, 1, kernel_size = 5, stride = 1, padding = 3, output_padding = 2, dilation = 1),
+            ConvTranspose2d(32, 1, kernel_size = 1, stride = 1, padding = 1, output_padding = 2, dilation = 1),
 
         )
 
