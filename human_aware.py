@@ -2,6 +2,7 @@ from encoder import Encoder
 from attention_module import Attention
 from bgdecoder import BGDecoder
 from fgdecoder import FGDecoder
+from pdecoder import PDecoder
 import torch
 from torch.nn import Linear, ReLU, Sequential, Conv2d, MaxPool2d, Module, ConvTranspose2d, Sigmoid
 
@@ -21,6 +22,10 @@ class HumanAware(Module):
 
         self.encoder = Encoder()
 
+        self.fgdecoder = FGDecoder()
+        self.bgdecoder = BGDecoder()
+        self.pdecoder = PDecoder()
+
     # Defining the forward pass    
     def forward(self, img, prev_img):
         downsampled_img = self.downsample(img)
@@ -36,7 +41,13 @@ class HumanAware(Module):
             stacked_bg_attention = torch.stack(stacked_bg_attention,attention_map_bg)
         fg_branch_input = torch.mul(primary_branch_input,stacked_fg_attention)
         bg_branch_input = torch.mul(primary_branch_input,stacked_bg_attention)
-        # from here chotu continues :p 
+
+        fg_decoder_output = self.fgdecoder(fg_branch_input)
+        bg_decoder_output = self.bgdecoder(bg_branch_input)
+
+        p_decoder_output = self.pdecoder(primary_branch_input, fg_decoder_output, bg_decoder_output)
+        
+
         return img
 
 
