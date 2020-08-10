@@ -33,6 +33,7 @@ class PDecoder(Module):
             ResidualBlock(48, 48, apply_activation=True),
             ResidualBlock(48, 48, apply_activation=True),
             ConvTranspose2d(48, 1, kernel_size = 5, stride = 1, padding = 3, output_padding = 2, dilation = 1),
+            Conv2d(1, 3, kernel_size=1, stride=1),
         )
 
         

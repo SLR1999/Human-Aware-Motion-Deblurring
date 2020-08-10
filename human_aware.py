@@ -48,6 +48,6 @@ class HumanAware(Module):
         p_decoder_output = self.pdecoder(primary_branch_input, fg_decoder_output, bg_decoder_output)
         
 
-        return img
+        return p_decoder_output
 
 
