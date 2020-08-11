@@ -40,11 +40,17 @@ class PDecoder(Module):
 
 
     # Defining the forward pass    
-    def forward(self, encoder_output, fg_output, bg_output, x):
-        x = torch.cat([encoder_output, fg_output.layer1, bg_output.layer1], dim = 0)
+    def forward(self, encoder_output, fg_branch_input, bg_branch_input, fg_output, bg_output, x):
+        fg_l1 = FGDecoder.layer1(fg_branch_input)
+        bg_l1 = BGDecoder.layer1(bg_branch_input)
+        x = torch.cat([encoder_output, fg_l1, bg_l1], dim = 0)
         x = self.layer1(x)
-        x = torch.cat([x, fg_output.layer2, bg_output.layer2], dim = 0)
+        fg_l2 = FGDecoder.layer2(fg_l1)
+        bg_l2 = BGDecoder.layer2(bg_l1)
+        x = torch.cat([x, fg_l2, bg_l2], dim = 0)
         x = self.layer2(x)
-        x = torch.cat([x, fg_output.layer3, bg_output.layer3], dim = 0)
+        fg_l3 = FGDecoder.layer2(fg_l2)
+        bg_l3 = BGDecoder.layer2(bg_l2)
+        x = torch.cat([x, fg_l3, bg_l3], dim = 0)
         x = self.layer3(x)
         return x

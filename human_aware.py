@@ -45,7 +45,7 @@ class HumanAware(Module):
         fg_decoder_output = self.fgdecoder(fg_branch_input)
         bg_decoder_output = self.bgdecoder(bg_branch_input)
 
-        p_decoder_output = self.pdecoder(primary_branch_input, fg_decoder_output, bg_decoder_output)
+        p_decoder_output = self.pdecoder(primary_branch_input, fg_branch_input, bg_branch_input, fg_decoder_output, bg_decoder_output)
         
 
         return p_decoder_output
