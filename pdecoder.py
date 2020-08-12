@@ -49,8 +49,8 @@ class PDecoder(Module):
         bg_l2 = BGDecoder.layer2(bg_l1)
         x = torch.cat([x, fg_l2, bg_l2], dim = 0)
         x = self.layer2(x)
-        fg_l3 = FGDecoder.layer2(fg_l2)
-        bg_l3 = BGDecoder.layer2(bg_l2)
+        fg_l3 = FGDecoder.layer3(fg_l2)
+        bg_l3 = BGDecoder.layer3(bg_l2)
         x = torch.cat([x, fg_l3, bg_l3], dim = 0)
         x = self.layer3(x)
         return x

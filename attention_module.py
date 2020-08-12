@@ -20,7 +20,7 @@ class Attention(Module):
         )
 
         self.decoder_layers = Sequential(
-            ConvTranspose2d(64,32,kernel_size = 2,stride = 1,padding = 1,output_padding = 0,dilation=2),
+            ConvTranspose2d(64,32,kernel_size = 3,stride = 2,padding = 2,output_padding = 1,dilation=2),
             ReLU(inplace=True),
 
             ConvTranspose2d(32,16,kernel_size = 3,stride = 2,padding = 2,output_padding = 1,dilation=2),
@@ -42,3 +42,9 @@ class Attention(Module):
         x = self.decoder_layers(x)
         x = self.prediction_map(x)
         return x
+
+# test
+# img = torch.rand((1,3,16,16))
+# attention_module = Attention()
+# attention_map_fg = attention_module(img)
+# print(attention_map_fg)

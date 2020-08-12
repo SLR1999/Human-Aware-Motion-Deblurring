@@ -17,7 +17,7 @@ class Encoder(Module):
             ResidualBlock(64, 64, apply_activation=True),
             ResidualBlock(64, 64, apply_activation=True),
 
-            Conv2d(64, 32, kernel_size=5, stride=2, padding=2),
+            Conv2d(64, 128, kernel_size=5, stride=2, padding=2),
             ResidualBlock(128, 128, apply_activation=True),
             ResidualBlock(128, 128, apply_activation=True),
             ResidualBlock(128, 128, apply_activation=True),
@@ -28,3 +28,9 @@ class Encoder(Module):
     def forward(self, x):
         x = self.layers(x)
         return x
+
+# test
+# img = torch.rand((1,6,16,16))
+# encoder = Encoder()
+# out = encoder(img)
+# print(out)

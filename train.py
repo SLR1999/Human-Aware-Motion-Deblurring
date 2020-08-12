@@ -1,5 +1,7 @@
 from human_aware import HumanAware
+from data_loader import DocumentDeblurrDataset
 import torch
+from metrics import PSNR, SSIM
 from torch.nn import Linear, ReLU, Sequential, Conv2d, MaxPool2d, Module, ConvTranspose2d, Sigmoid, MSELoss
 from torch.utils.data import DataLoader
 from torch.optim import lr_scheduler
@@ -13,7 +15,7 @@ from collections import defaultdict
 
 class Trainer:
 
-    def __init__(self, model, optimizer, criterion, scheduler, num_epochs=25, batch_size=5):
+    def __init__(self, model, optimizer, criterion, scheduler, num_epochs=25, batch_size=1):
         gc.collect()
         self.model = model
         self.optimizer = optimizer
@@ -27,10 +29,20 @@ class Trainer:
         self.num_epochs = num_epochs
         self.load_dataset(batch_size)
 
+    def loss_with_attention(self, output, target, attention_map):
+        loss = torch.mean((torch.mul(output,attention_map) - torch.mul(target,attention_map))**2)
+        return loss
+
     def load_dataset(self, batch_size):
-        print ("Need to write")
-        train_set = Dataset()
-        val_set = Dataset()
+        # print ("Need to write")
+        train_set = DocumentDeblurrDataset("./data/train/blurred_images/",
+                               "./data/train/clear_images/",
+                               "./data/train/attention_maps/",
+                               self.transform)
+        val_set = DocumentDeblurrDataset("./data/val/blurred_images/",
+                               "./data/val/clear_images/",
+                               "./data/val/attention_maps/",
+                               self.transform)
         self.image_datasets = {
             'train': train_set, 'val': val_set
         }
@@ -47,6 +59,19 @@ class Trainer:
         metrics['Loss'] += loss.data.cpu().numpy() * real_images.size(0)
         return loss
 
+    def calculate_fg_loss(self, outputs, real_images, attention_map, criterion, metrics):
+        loss = self.loss_with_attention(outputs, real_images, attention_map)
+        # metrics['PSNR'] = PSNR(outputs, real_images)
+        metrics['SSIM'] += SSIM(outputs, real_images).data.cpu().numpy() * real_images.size(0)
+        metrics['Loss'] += loss.data.cpu().numpy() * real_images.size(0)
+        return loss
+
+    def calculate_bg_loss(self, outputs, real_images, attention_map, criterion, metrics):
+        loss = self.loss_with_attention(outputs, real_images, 1-attention_map)
+        # metrics['PSNR'] = PSNR(outputs, real_images)
+        metrics['SSIM'] += SSIM(outputs, real_images).data.cpu().numpy() * real_images.size(0)
+        metrics['Loss'] += loss.data.cpu().numpy() * real_images.size(0)
+        return loss
 
     def print_metrics(self, metrics, epoch_samples, phase):
         outputs = []
@@ -75,7 +100,7 @@ class Trainer:
                 metrics = defaultdict(float)
                 epoch_samples = 0
 
-                for blurred_images, real_images in self.dataloaders[phase]:
+                for blurred_images, real_images, attention_maps in self.dataloaders[phase]:
                     if self.use_gpu:
                         blurred_images = blurred_images.cuda()
                         real_images = real_images.cuda()
@@ -86,12 +111,16 @@ class Trainer:
                     # forward
                     # track history if only in train
                     with torch.set_grad_enabled(phase == 'train'):
-                        outputs = self.model(blurred_images)
-                        loss = self.calculate_loss(outputs, real_images, self.criterion, metrics)
+                        p_decoder_output, fg_decoder_output, bg_decoder_output = self.model(blurred_images)
+                        p_loss = self.calculate_loss(p_decoder_output, real_images, self.criterion, metrics)
+                        fg_loss = self.calculate_fg_loss(fg_decoder_output, real_images, attention_maps, self.criterion, metrics)
+                        bg_loss = self.calculate_bg_loss(bg_decoder_output, real_images, attention_maps, self.criterion, metrics)
 
                         # backward + optimize only if in training phase
                         if phase == 'train':
-                            loss.backward()
+                            p_loss.backward()
+                            fg_loss.backward()
+                            bg_loss.backward()
                             self.optimizer.step()
 
                     # statistics
