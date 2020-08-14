@@ -43,11 +43,9 @@ class HumanAware(Module):
             stacked_bg_attention = torch.cat((stacked_bg_attention,attention_map_bg),1)
         fg_branch_input = torch.mul(primary_branch_input,stacked_fg_attention)
         bg_branch_input = torch.mul(primary_branch_input,stacked_bg_attention)
-
-        fg_decoder_output = self.fgdecoder(fg_branch_input)
-        bg_decoder_output = self.bgdecoder(bg_branch_input)
-        p_decoder_output = self.pdecoder(primary_branch_input, fg_branch_input, bg_branch_input, fg_decoder_output, bg_decoder_output)
-        
+        fg_decoder_output, fg_l1, fg_l2, fg_l3 = self.fgdecoder(fg_branch_input)
+        bg_decoder_output, bg_l1, bg_l2, bg_l3 = self.bgdecoder(bg_branch_input)
+        p_decoder_output = self.pdecoder(primary_branch_input, fg_l1, fg_l2, fg_l3, bg_l1, bg_l2, bg_l3)
 
         return p_decoder_output, fg_decoder_output, bg_decoder_output
 

@@ -1,5 +1,5 @@
 from human_aware import HumanAware
-from data_loader import DocumentDeblurrDataset
+from data_loader import DeblurrDataset
 import torch
 from metrics import PSNR, SSIM
 from torch.nn import Linear, ReLU, Sequential, Conv2d, MaxPool2d, Module, ConvTranspose2d, Sigmoid, MSELoss
@@ -21,11 +21,11 @@ class Trainer:
         self.optimizer = optimizer
         self.criterion = criterion
         self.scheduler = scheduler
-        self.use_gpu = torch.cuda.is_available()
+        # self.use_gpu = torch.cuda.is_available()
         self.transform = transforms.Compose([transforms.ToTensor(),
                                              transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
-        if self.use_gpu:
-            self.model.cuda()
+        # if self.use_gpu:
+        #     self.model.cuda()
         self.num_epochs = num_epochs
         self.load_dataset(batch_size)
 
@@ -35,11 +35,11 @@ class Trainer:
 
     def load_dataset(self, batch_size):
         # print ("Need to write")
-        train_set = DocumentDeblurrDataset("./data/train/blurred_images/",
+        train_set = DeblurrDataset("./data/train/blurred_images/",
                                "./data/train/clear_images/",
                                "./data/train/attention_maps/",
                                self.transform)
-        val_set = DocumentDeblurrDataset("./data/val/blurred_images/",
+        val_set = DeblurrDataset("./data/val/blurred_images/",
                                "./data/val/clear_images/",
                                "./data/val/attention_maps/",
                                self.transform)
@@ -100,9 +100,9 @@ class Trainer:
                 metrics = defaultdict(float)
                 epoch_samples = 0
                 for blurred_images, real_images, attention_maps in self.dataloaders[phase]:
-                    if self.use_gpu:
-                        blurred_images = blurred_images.cuda()
-                        real_images = real_images.cuda()
+                    # if self.use_gpu:
+                    #     blurred_images = blurred_images.cuda()
+                    #     real_images = real_images.cuda()
 
                     # zero the parameter gradients
                     self.optimizer.zero_grad()

@@ -9,7 +9,7 @@ transform = transforms.Compose([
         transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))]) 
 
 
-class DocumentDeblurrDataset(Dataset):
+class DeblurrDataset(Dataset):
     def __init__(self, blurred_image_path, real_image_path, attention_path, transform=None):
         self.blurred_image_path = blurred_image_path
         self.real_image_path = real_image_path

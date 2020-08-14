@@ -32,25 +32,22 @@ class PDecoder(Module):
             ResidualBlock(48, 48, apply_activation=True),
             ResidualBlock(48, 48, apply_activation=True),
             ResidualBlock(48, 48, apply_activation=True),
-            ConvTranspose2d(48, 1, kernel_size = 5, stride = 1, padding = 3, output_padding = 2, dilation = 1),
+            ConvTranspose2d(48, 1, kernel_size = 5, stride = 1, padding = 2, dilation = 1),
             Conv2d(1, 3, kernel_size=1, stride=1),
         )
+
+        self.fgdecoder = FGDecoder()
+        self.bgdecoder = BGDecoder()
 
         
 
 
     # Defining the forward pass    
-    def forward(self, encoder_output, fg_branch_input, bg_branch_input, fg_output, bg_output, x):
-        fg_l1 = FGDecoder.layer1(fg_branch_input)
-        bg_l1 = BGDecoder.layer1(bg_branch_input)
-        x = torch.cat([encoder_output, fg_l1, bg_l1], dim = 0)
+    def forward(self, encoder_output, fg_l1, fg_l2, fg_l3, bg_l1, bg_l2, bg_l3):
+        x = torch.cat([encoder_output, fg_l1, bg_l1], dim = 1)
         x = self.layer1(x)
-        fg_l2 = FGDecoder.layer2(fg_l1)
-        bg_l2 = BGDecoder.layer2(bg_l1)
-        x = torch.cat([x, fg_l2, bg_l2], dim = 0)
+        x = torch.cat([x, fg_l2, bg_l2], dim = 1)
         x = self.layer2(x)
-        fg_l3 = FGDecoder.layer3(fg_l2)
-        bg_l3 = BGDecoder.layer3(bg_l2)
-        x = torch.cat([x, fg_l3, bg_l3], dim = 0)
+        x = torch.cat([x, fg_l3, bg_l3], dim = 1)
         x = self.layer3(x)
         return x
