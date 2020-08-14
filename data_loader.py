@@ -39,7 +39,7 @@ class DocumentDeblurrDataset(Dataset):
         if self.transform: 
             blurred_image = self.transform(blurred_image)
             real_image = self.transform(real_image)
-            attention_map = self.transform(attention_map)
+            # attention_map = self.transform(attention_map)
 
         return (blurred_image, real_image, attention_map)
 
