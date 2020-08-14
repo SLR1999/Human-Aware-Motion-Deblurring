@@ -99,7 +99,6 @@ class Trainer:
 
                 metrics = defaultdict(float)
                 epoch_samples = 0
-
                 for blurred_images, real_images, attention_maps in self.dataloaders[phase]:
                     if self.use_gpu:
                         blurred_images = blurred_images.cuda()

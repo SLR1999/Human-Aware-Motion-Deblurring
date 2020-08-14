@@ -44,7 +44,7 @@ class Attention(Module):
         return x
 
 # test
-# img = torch.rand((1,3,16,16))
+# img = torch.rand((1,3,50,50))
 # attention_module = Attention()
 # attention_map_fg = attention_module(img)
-# print(attention_map_fg)
+# print(attention_map_fg.shape)

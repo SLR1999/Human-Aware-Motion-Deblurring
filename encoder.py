@@ -7,7 +7,8 @@ class Encoder(Module):
         super(Encoder, self).__init__()
 
         self.layers = Sequential(
-            Conv2d(6, 32, kernel_size=5, stride=1, padding=2),
+            # Conv2d(6, 32, kernel_size=5, stride=1, padding=2),
+            Conv2d(3, 32, kernel_size=5, stride=1, padding=2),
             ResidualBlock(32, 32, apply_activation=True),
             ResidualBlock(32, 32, apply_activation=True),
             ResidualBlock(32, 32, apply_activation=True),
