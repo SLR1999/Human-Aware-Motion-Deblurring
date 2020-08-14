@@ -62,15 +62,15 @@ class Trainer:
     def calculate_fg_loss(self, outputs, real_images, attention_map, criterion, metrics):
         loss = self.loss_with_attention(outputs, real_images, attention_map)
         # metrics['PSNR'] = PSNR(outputs, real_images)
-        metrics['SSIM'] += SSIM(outputs, real_images).data.cpu().numpy() * real_images.size(0)
-        metrics['Loss'] += loss.data.cpu().numpy() * real_images.size(0)
+        # metrics['SSIM'] += SSIM(outputs, real_images).data.cpu().numpy() * real_images.size(0)
+        # metrics['Loss'] += loss.data.cpu().numpy() * real_images.size(0)
         return loss
 
     def calculate_bg_loss(self, outputs, real_images, attention_map, criterion, metrics):
         loss = self.loss_with_attention(outputs, real_images, 1-attention_map)
         # metrics['PSNR'] = PSNR(outputs, real_images)
-        metrics['SSIM'] += SSIM(outputs, real_images).data.cpu().numpy() * real_images.size(0)
-        metrics['Loss'] += loss.data.cpu().numpy() * real_images.size(0)
+        # metrics['SSIM'] += SSIM(outputs, real_images).data.cpu().numpy() * real_images.size(0)
+        # metrics['Loss'] += loss.data.cpu().numpy() * real_images.size(0)
         return loss
 
     def print_metrics(self, metrics, epoch_samples, phase):
@@ -117,9 +117,9 @@ class Trainer:
 
                         # backward + optimize only if in training phase
                         if phase == 'train':
-                            p_loss.backward()
-                            fg_loss.backward()
-                            bg_loss.backward()
+                            p_loss.backward(retain_graph=True)
+                            fg_loss.backward(retain_graph=True)
+                            bg_loss.backward(retain_graph=True)
                             self.optimizer.step()
 
                     # statistics
