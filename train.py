@@ -35,13 +35,13 @@ class Trainer:
 
     def load_dataset(self, batch_size):
         # print ("Need to write")
-        train_set = DeblurrDataset("./data/train_blur_bicubic/X4/**/",
-                               "./data/train_sharp_bicubic/X4/**/",
-                               "./data/maps_train/**/",
+        train_set = DeblurrDataset("../data/train_blur_bicubic/X4/**/",
+                               "../data/train_sharp_bicubic/X4/**/",
+                               "../data/maps_train/**/",
                                self.transform)
-        val_set = DeblurrDataset("./data/val_blur/val_blur_bicubic/X4/**/",
-                               "./data/val/val_sharp_bicubic/X4/**/",
-                               "./data/maps_val/**/",
+        val_set = DeblurrDataset("../data/val_blur/val_blur_bicubic/X4/**/",
+                               "../data/val/val_sharp_bicubic/X4/**/",
+                               "../data/maps_val/**/",
                                self.transform)
         self.image_datasets = {
             'train': train_set, 'val': val_set
