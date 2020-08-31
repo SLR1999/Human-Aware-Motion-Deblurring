@@ -18,13 +18,13 @@ class DeblurrDataset(Dataset):
         self._add_images()
 
     def _add_images(self):
-        print(self.blurred_image_path + "*.png")
-        print(self.attention_path + "*.png")
-        print(self.real_image_path + "*.png")
-        self.blurred_images = glob.glob(self.blurred_image_path + "*.png")
+        print(self.blurred_image_path)
+        print(self.attention_path)
+        print(self.real_image_path)
+        self.blurred_images = glob.glob(self.blurred_image_path)
         set_of_blurred_images = len(self.blurred_images)
-        self.attention_maps = glob.glob(self.attention_path + "*.png")
-        self.real_images = glob.glob(self.real_image_path + "*.png")
+        self.attention_maps = glob.glob(self.attention_path)
+        self.real_images = glob.glob(self.real_image_path)
         total_ground_truth = len(self.real_images)
         self.real_images = self.real_images*int((set_of_blurred_images/total_ground_truth))
 
