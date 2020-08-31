@@ -15,7 +15,7 @@ from collections import defaultdict
 
 class Trainer:
 
-    def __init__(self, model, optimizer, criterion, scheduler, num_epochs=25, batch_size=1):
+    def __init__(self, model, optimizer, criterion, scheduler, num_epochs=25, batch_size=2):
         gc.collect()
         self.model = model
         self.optimizer = optimizer
@@ -35,13 +35,13 @@ class Trainer:
 
     def load_dataset(self, batch_size):
         # print ("Need to write")
-        train_set = DeblurrDataset("./data/train/blurred_images/",
-                               "./data/train/clear_images/",
-                               "./data/train/attention_maps/",
+        train_set = DeblurrDataset("../data/train_blur_bicubic/X4/**/",
+                               "../data/train_sharp_bicubic/X4/**/",
+                               "../data/maps_train/**/",
                                self.transform)
-        val_set = DeblurrDataset("./data/val/blurred_images/",
-                               "./data/val/clear_images/",
-                               "./data/val/attention_maps/",
+        val_set = DeblurrDataset("../data/val_blur/val_blur_bicubic/X4/**/",
+                               "../data/val/val_sharp_bicubic/X4/**/",
+                               "../data/maps_val/**/",
                                self.transform)
         self.image_datasets = {
             'train': train_set, 'val': val_set
@@ -110,16 +110,18 @@ class Trainer:
                     # forward
                     # track history if only in train
                     with torch.set_grad_enabled(phase == 'train'):
-                        p_decoder_output, fg_decoder_output, bg_decoder_output = self.model(blurred_images)
+                        p_decoder_output, fg_decoder_output, bg_decoder_output, attention_map_pred = self.model(blurred_images)
                         p_loss = self.calculate_loss(p_decoder_output, real_images, self.criterion, metrics)
                         fg_loss = self.calculate_fg_loss(fg_decoder_output, real_images, attention_maps, self.criterion, metrics)
-                        bg_loss = self.calculate_bg_loss(bg_decoder_output, real_images, attention_maps, self.criterion, metrics)
+                        bg_loss = self.calculate_bg_loss(bg_decoder_output, blurred_images, attention_maps, self.criterion, metrics)
+                        attention_loss = self.calculate_loss(attention_map_pred, attention_maps, self.criterion, metrics)
 
                         # backward + optimize only if in training phase
                         if phase == 'train':
                             p_loss.backward(retain_graph=True)
                             fg_loss.backward(retain_graph=True)
                             bg_loss.backward(retain_graph=True)
+                            attention_loss.backward(retain_graph=True)
                             self.optimizer.step()
 
                     # statistics

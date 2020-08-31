@@ -41,6 +41,8 @@ class DeblurrDataset(Dataset):
             real_image = self.transform(real_image)
             # attention_map = self.transform(attention_map)
         attention_map = torch.Tensor(attention_map)
+        attention_width, attention_height = list(attention_map.size()   )
+        attention_map = attention_map.view(1,attention_width, attention_height)
         return (blurred_image, real_image, attention_map)
 
 
