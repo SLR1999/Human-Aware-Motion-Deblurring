@@ -39,10 +39,12 @@ class Trainer:
                                "../data/train_sharp_bicubic/X4/*/",
                                "../data/maps_train/*/",
                                self.transform)
+        print(len(train_set))
         val_set = DeblurrDataset("../data/val_blur/val_blur_bicubic/X4/*/",
                                "../data/val/val_sharp_bicubic/X4/*/",
                                "../data/maps_val/*/",
                                self.transform)
+        print(len(val_set))
         self.image_datasets = {
             'train': train_set, 'val': val_set
         }
