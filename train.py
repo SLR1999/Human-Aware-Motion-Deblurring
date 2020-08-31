@@ -15,7 +15,7 @@ from collections import defaultdict
 
 class Trainer:
 
-    def __init__(self, model, optimizer, criterion, scheduler, num_epochs=25, batch_size=2):
+    def __init__(self, model, optimizer, criterion, scheduler, num_epochs=25, batch_size=1):
         gc.collect()
         self.model = model
         self.optimizer = optimizer

@@ -40,14 +40,14 @@ class DeblurrDataset(Dataset):
             blurred_image = self.transform(blurred_image)
             real_image = self.transform(real_image)
             # attention_map = self.transform(attention_map)
-        attention_map = torch.Tensor(attention_map)
+        attention_map = torch.Tensor(attention_map)/255
         attention_width, attention_height = list(attention_map.size()   )
         attention_map = attention_map.view(1,attention_width, attention_height)
         return (blurred_image, real_image, attention_map)
 
 
 if __name__ == "__main__":
-    d = DocumentDeblurrDataset("/home/ananya/Documents/de blurring/Human-Aware-Motion-Deblurring/data/train/blurred_images/",
+    d = DeblurrDataset("/home/ananya/Documents/de blurring/Human-Aware-Motion-Deblurring/data/train/blurred_images/",
                                "/home/ananya/Documents/de blurring/Human-Aware-Motion-Deblurring/data/train/clear_images/",
                                "/home/ananya/Documents/de blurring/Human-Aware-Motion-Deblurring/data/train/attention_maps/",
                                transform)
