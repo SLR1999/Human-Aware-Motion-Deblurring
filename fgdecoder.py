@@ -32,7 +32,7 @@ class FGDecoder(Module):
         )
 
         self.convlayer3 = Sequential(
-            ConvTranspose2d(32, 1, kernel_size = 5, stride = 1, padding = 2, dilation = 1),
+            ConvTranspose2d(32, 3, kernel_size = 5, stride = 1, padding = 2, dilation = 1),
         )
 
 
