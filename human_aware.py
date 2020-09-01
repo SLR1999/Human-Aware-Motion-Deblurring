@@ -31,6 +31,7 @@ class HumanAware(Module):
     def forward(self,img):
         downsampled_img = self.downsample(img)
         # upsampled_prev_img = self.upsample(prev_img)
+        attention_map_orig = self.attention_module(img)
         attention_map_fg = self.attention_module(downsampled_img)
         attention_map_bg = 1 - attention_map_fg
         encoder_input = img
@@ -47,6 +48,6 @@ class HumanAware(Module):
         bg_decoder_output, bg_l1, bg_l2, bg_l3 = self.bgdecoder(bg_branch_input)
         p_decoder_output = self.pdecoder(primary_branch_input, fg_l1, fg_l2, fg_l3, bg_l1, bg_l2, bg_l3)
 
-        return p_decoder_output, fg_decoder_output, bg_decoder_output
+        return p_decoder_output, fg_decoder_output, bg_decoder_output, attention_map_orig
 
 
